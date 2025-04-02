@@ -2,6 +2,8 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Weapons : NetworkBehaviour
 {
@@ -16,6 +18,7 @@ public class Weapons : NetworkBehaviour
     [SerializeField] protected float fireRate;
     [SerializeField] protected float speedModifier;
     protected float nextFire;
+    [SerializeField] protected RawImage hitmarkerImage;
 
     protected Camera playerCam;
     protected InputHandler input;
@@ -40,7 +43,11 @@ public class Weapons : NetworkBehaviour
         {
             Shoot();
         }
-            
+        
+        if(SceneManager.GetActiveScene().name == "Main" && hitmarkerImage == null)
+        {
+            hitmarkerImage = GameObject.FindWithTag("Hitmarker").GetComponent<RawImage>();
+        }
     }
 
     protected void Reload()
@@ -81,8 +88,19 @@ public class Weapons : NetworkBehaviour
         {
             GameObject target = hit.collider.transform.gameObject.CompareTag("Player") ? hit.collider.transform.parent.gameObject : null;
             if (target != null)
+            {
                 target.GetComponent<PlayerHealth>().TakeDamage(damage);
                 Debug.Log("Shot " + target.name + " for " + damage + " Damage");
+                StartCoroutine(hitmarker());
+            }
         }
+    }
+
+
+    protected IEnumerator hitmarker()
+    {
+        hitmarkerImage.enabled = true;
+        yield return new WaitForSeconds(0.1f);
+        hitmarkerImage.enabled = false;
     }
 }
