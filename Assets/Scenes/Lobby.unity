@@ -2421,7 +2421,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -2621,6 +2622,7 @@ GameObject:
   - component: {fileID: 1302731305}
   - component: {fileID: 1302731302}
   - component: {fileID: 1302731304}
+  - component: {fileID: 1302731306}
   m_Layer: 0
   m_Name: LobbyManager
   m_TagString: Untagged
@@ -2641,10 +2643,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  maxPlayers: 10
   playerPrefab: {fileID: 163510238107069518, guid: f9105893dacb8694b97ef767c3fe8391, type: 3}
   players: []
-  logLevel: 0
+  quickTest: 0
+  teamSelected: 0
 --- !u!4 &1302731303
 Transform:
   m_ObjectHideFlags: 0
@@ -2712,6 +2714,19 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &1302731306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302731301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 987544737f6de9444bb5fba39cc66987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1348223005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2820,6 +2835,10 @@ PrefabInstance:
     - target: {fileID: 2970296263834588007, guid: ae6cd01c7ac951d4f8c143c8b1dd4fd3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8794848404948728175, guid: ae6cd01c7ac951d4f8c143c8b1dd4fd3, type: 3}
+      propertyPath: switchWeaponActionName
+      value: Swap
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3475,7 +3494,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1302731302}
         m_TargetAssemblyTypeName: _Scripts.LobbyManager, Assembly-CSharp
-        m_MethodName: StartGame
+        m_MethodName: StartGameRpc
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3586,7 +3605,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1862614704}
-    PlayerPrefab: {fileID: 3629556757467204929, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
+    PlayerPrefab: {fileID: 163510238107069518, guid: c792025047c114944aae53747659f8b9, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 64af1ff49228772438fcae2e643c05df, type: 2}

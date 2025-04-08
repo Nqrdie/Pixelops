@@ -1,31 +1,26 @@
-using System;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace _Scripts.Player
 {
     public class Player : NetworkBehaviour
     {
-        private void Awake() { }
+        [SerializeField]
+        private NetworkObject inGamePlayerPrefab;
+        private string _lobbyPlayerId;
+        public int team;
 
-        private void Update()
-        {
-            if (GetComponent<PlayerMovement>().enabled == false)
-            {
-                CheckScene();
-            }
-        }
         private void Start()
         {
             if (!IsOwner)
             {
-                enabled = false;
                 return;
             }
-            transform.position = new Vector3(0, -10000, 0);
+            _lobbyPlayerId = AuthenticationService.Instance.PlayerId;
             ParentThisRpc();
-            GameObject.DontDestroyOnLoad(transform.parent.gameObject);
+            SendUlongIdToServerRpc(_lobbyPlayerId);
+            // NetworkManager.SceneManager.OnLoadComplete += GameManager.Instance.SceneManagerOnOnLoadComplete;
         }
 
         [Rpc(SendTo.Server)]
@@ -33,6 +28,43 @@ namespace _Scripts.Player
         {
             transform.parent = GameObject.Find("PlayerParent").transform;
             LobbyManager.Instance.CheckForPlayersRpc();
+            DDolThisRpc();
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void DDolThisRpc()
+        {
+            DontDestroyOnLoad(transform.parent.gameObject);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void SendUlongIdToServerRpc(string playerId)
+        {
+            _lobbyPlayerId = playerId;
+            ulong ulongId = NetworkObject.OwnerClientId;
+            Debug.Log($"Player {playerId} joined.");
+            LobbyManager.Instance.ConvertedIds.Add(ulongId, playerId);
+        }
+
+        public void SpawnInThisPlayer()
+        {
+            NetworkObject player = NetworkManager.Singleton.SpawnManager.InstantiateAndSpawn(
+                inGamePlayerPrefab,
+                NetworkObject.OwnerClientId,
+                isPlayerObject: true
+            );
+
+            SetTeamRpc(player.OwnerClientId);
+            player.GetComponent<PlayerTeamManager>().team = team;
+            Debug.Log($"Player {LobbyUtil.GetName(NetworkObject.OwnerClientId)} {team} spawned in.");
+            Debug.Log($"Spawning in player {LobbyUtil.GetName(NetworkObject.OwnerClientId)}");
+        }
+
+        [Rpc(SendTo.Everyone)]  
+        private void SetTeamRpc(ulong playerId)
+        {
+            NetworkObject player = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(playerId);
+            player.GetComponent<PlayerTeamManager>().team = team;
         }
 
         public void OnLeaving()
@@ -40,14 +72,12 @@ namespace _Scripts.Player
             Destroy(gameObject);
         }
 
-        private void CheckScene()
+        [Rpc(SendTo.Everyone)]
+        public void AssignTeamRpc(ulong clientId, int teamId)
         {
-            if (SceneManager.GetActiveScene().name == "Main")
-            {
-                GetComponent<PlayerMovement>().enabled = true;
-                GetComponentInChildren<Weapons>().enabled = true;
-                transform.position = new Vector3(0, 1, 0);
-            }
+             team = teamId;
         }
+
+
     }
 }

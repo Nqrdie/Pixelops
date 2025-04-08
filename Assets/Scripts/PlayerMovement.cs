@@ -75,11 +75,10 @@ public class PlayerMovement : NetworkBehaviour
 
         // Movement input from player
         Vector3 moveDirection = transform.forward * inputHandler.moveInput.y + transform.right * inputHandler.moveInput.x;
-
-        if(grounded)
-            rb.AddForce(moveDirection * speed, ForceMode.Force);
-        else if(!grounded)
+        if(!grounded)
             rb.AddForce(moveDirection * speed * airMultiplier, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection * speed, ForceMode.Force);
     }
 
     private void Jump()
@@ -89,6 +88,8 @@ public class PlayerMovement : NetworkBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
         Invoke(nameof(ResetJump), jumpCooldown);
+
+        GetComponent<PlayerTeamManager>().enabled = true;
     }
 
     private void SpeedControl()

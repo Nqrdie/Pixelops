@@ -7,7 +7,7 @@ using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
-using static _Scripts.LobbyMisc;
+using static _Scripts.LobbyUtil;
 
 namespace _Scripts
 {
@@ -155,7 +155,7 @@ namespace _Scripts
         {
             try
             {
-                await LobbyMisc.ChangeName(newName);
+                await LobbyUtil.ChangeName(newName);
             }
             catch (Exception e)
             {
@@ -240,8 +240,9 @@ namespace _Scripts
 
         public void CreateGame() => LobbyManager.Instance.CreateLobby(hostLobbyName.text);
 
-        public void OnNewPlayer(List<Unity.Services.Lobbies.Models.Player> playerList)
+        public void OnNewPlayer()
         {
+            var playerList = LobbyManager.Instance.Lobby.Players;
             foreach (GameObject obj in _playerList)
             {
                 Destroy(obj);
@@ -269,6 +270,7 @@ namespace _Scripts
             bool isServer = NetworkManager.Singleton.IsServer;
             lobbyDelete.gameObject.SetActive(isServer);
             lobbyDisconnect.gameObject.SetActive(!isServer);
+            startGame.gameObject.SetActive(isServer);
         }
 
         public void ChangeStatus(string status = "", Color color = default)

@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class InputHandler : MonoBehaviour
 {
+
     [Header("InputSystem")]
     [SerializeField] private InputActionAsset playerControls;
 
@@ -16,6 +18,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private string shootActionName = "Shoot";
     [SerializeField] private string aimActionName = "Aim";
     [SerializeField] private string reloadActionName = "Reload";
+    [SerializeField] private string switchWeaponActionName = "Swap";
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -23,6 +26,9 @@ public class InputHandler : MonoBehaviour
     private InputAction shootAction;
     private InputAction aimAction;
     private InputAction reloadAction;
+    public InputAction switchWeaponAction;
+
+    public int switchWeaponIndex { get; private set; }
 
     public Vector2 moveInput { get; private set; }
 
@@ -35,6 +41,8 @@ public class InputHandler : MonoBehaviour
     public bool aimTriggered { get; private set; }
 
     public bool reloadTriggered { get; private set; }
+
+    public int switchWeaponValue { get; private set; }
 
 
     public static InputHandler Instance { get; private set; }
@@ -58,6 +66,7 @@ public class InputHandler : MonoBehaviour
         shootAction = playerControls.FindActionMap(actionMapName).FindAction(shootActionName);
         aimAction = playerControls.FindActionMap(actionMapName).FindAction(aimActionName);
         reloadAction = playerControls.FindActionMap(actionMapName).FindAction(reloadActionName);
+        switchWeaponAction = playerControls.FindActionMap(actionMapName).FindAction(switchWeaponActionName);
         RegisterInputActions();
     }
 
@@ -80,6 +89,9 @@ public class InputHandler : MonoBehaviour
 
         reloadAction.performed += context => reloadTriggered = true;
         reloadAction.canceled += context => reloadTriggered = false;
+
+        switchWeaponAction.performed += OnSwitchWeapon;
+        switchWeaponAction.canceled -= OnSwitchWeapon;
     }
 
     private void OnEnable()
@@ -90,6 +102,7 @@ public class InputHandler : MonoBehaviour
         shootAction.Enable();
         aimAction.Enable();
         reloadAction.Enable();
+        switchWeaponAction.Enable();
     }
 
     private void OnDisable()
@@ -100,5 +113,11 @@ public class InputHandler : MonoBehaviour
         shootAction.Disable();
         aimAction.Disable();
         reloadAction.Disable();
+        switchWeaponAction.Disable();
+    }
+
+    private void OnSwitchWeapon(InputAction.CallbackContext context)
+    {
+        switchWeaponIndex = (int)context.ReadValue<float>();
     }
 }

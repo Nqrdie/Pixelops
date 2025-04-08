@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Hitmarker
+  - AmmoText
   layers:
   - Default
   - TransparentFX
@@ -12,8 +13,8 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
+  - Team1
+  - Team2
   - 
   - 
   - 
