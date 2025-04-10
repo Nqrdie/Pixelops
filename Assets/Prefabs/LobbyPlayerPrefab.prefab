@@ -71,5 +71,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  inGamePlayerPrefab: {fileID: 8239534651928210915, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
+  inGamePlayerPrefab: {fileID: 4308097198429232293, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
   team: 0

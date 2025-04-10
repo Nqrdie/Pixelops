@@ -2643,7 +2643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerPrefab: {fileID: 163510238107069518, guid: f9105893dacb8694b97ef767c3fe8391, type: 3}
+  playerPrefab: {fileID: 3629556757467204929, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
   players: []
   quickTest: 0
   teamSelected: 0
@@ -3631,7 +3631,7 @@ MonoBehaviour:
     NetworkProfilingMetrics: 1
     OldPrefabList: []
   RunInBackground: 1
-  LogLevel: 2
+  LogLevel: 3
 --- !u!4 &1862614706
 Transform:
   m_ObjectHideFlags: 0

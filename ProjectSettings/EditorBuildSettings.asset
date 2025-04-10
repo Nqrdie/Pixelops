@@ -6,17 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/NGO_Minimal_Setup/NGO_Setup.unity
-    guid: 3a2046e476e6b4442ab7b948633c452b
-  - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 86bf15fed29573b47ae2846525077f5e
   - enabled: 1
     path: Assets/Scenes/TeamSelect.unity
     guid: d835666cf20053842830a809011acc24
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/NGO_Minimal_Setup/NGO_Setup.unity
+    guid: 3a2046e476e6b4442ab7b948633c452b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

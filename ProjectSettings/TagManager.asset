@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Hitmarker
   - AmmoText
+  - ReloadingText
+  - RoundEndText
+  - HealthText
+  - HurtFlash
   layers:
   - Default
   - TransparentFX

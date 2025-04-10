@@ -49,5 +49,16 @@ MonoBehaviour:
   movementActionName: Movement
   jumpActionName: Jump
   sprintActionName: Sprint
-  attackActionName: Attack
+  shootActionName: Shoot
   aimActionName: Aim
+  reloadActionName: Reload
+  switchWeaponActionName: Swap
+  switchWeaponAction:
+    m_Name: Switch Weapon
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 06e42a20-8892-4972-bbd8-85412e1f51c2
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
