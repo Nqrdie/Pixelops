@@ -20,6 +20,10 @@ namespace _Scripts
 {
     public class LobbyManager : NetworkBehaviour
     {
+        /// <summary>
+        /// Made by Jesper Heese
+        /// I edited a lot to make it work in my game
+        /// </summary>
         public static LobbyManager Instance { get; private set; }
         public bool IsSignedIn { get; private set; }
         private bool GameStarted { get; set; }
@@ -59,12 +63,10 @@ namespace _Scripts
         public void SyncConvertedIdsRpc(byte[] serializedDictionary)
         {
             ConvertedIds = DeserializeDictionary(serializedDictionary);
-            Debug.Log($"[Client] ConvertedIds synchronized. Count: {ConvertedIds.Count}");
 
             for (int i = 0; i < ConvertedIds.Count; i++)
             {
                 var kvp = ConvertedIds.ElementAt(i);
-                Debug.LogWarning($"[Client] ConvertedId: {kvp.Key} -> {kvp.Value}");
             }
         }
 
@@ -73,9 +75,7 @@ namespace _Scripts
             if (IsServer)
             {
                 ConvertedIds.Add(ownerClientId, playerId);
-                Debug.Log($"[Server] Added ConvertedId: {ownerClientId} -> {playerId}");
 
-                // Synchronize with all clients
                 SyncConvertedIdsRpc(SerializeDictionary(ConvertedIds));
             }
         }
@@ -89,7 +89,6 @@ namespace _Scripts
                 {
                     writer.WriteValueSafe(kvp.Key);
                     writer.WriteValueSafe(kvp.Value);
-                    Debug.LogWarning($"[Server] Serialized ConvertedId: {kvp.Key} -> {kvp.Value}");
                 }
                 return writer.ToArray();
             }
@@ -106,10 +105,8 @@ namespace _Scripts
                     reader.ReadValueSafe(out ulong key);
                     reader.ReadValueSafe(out string value);
                     dictionary.Add(key, value);
-                    Debug.LogWarning($"[Client] Deserialized ConvertedId: {key} -> {value}");
                 }
             }
-            Debug.Log($"[Client] Deserialized dictionary. Count: {dictionary.Count}");
             return dictionary;
         }
 

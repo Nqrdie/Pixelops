@@ -33,7 +33,6 @@ namespace _Scripts
             if (IsServer)
             {
                 GetAllPlayers();
-                Debug.Log("Loading in players");
                 NetworkManager.SceneManager.OnLoadComplete += SceneManagerOnOnLoadComplete;
             }
         }

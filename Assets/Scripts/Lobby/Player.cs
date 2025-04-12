@@ -36,7 +36,6 @@ namespace _Scripts
             {
                 team = newTeam;
                 OnTeamChanged?.Invoke(team); // Ensure this is being called
-                Debug.Log($"Team changed to {team} for player {gameObject.name}");
             }
         }
 
@@ -134,10 +133,8 @@ namespace _Scripts
             if (team != newTeam)
             {
                 team = newTeam;
-                OnTeamChanged?.Invoke(team); // Trigger the OnTeamChanged event
-                Debug.Log($"Team changed to {team} for player {gameObject.name}");
+                OnTeamChanged?.Invoke(team); 
 
-                // Notify all clients to update the UI
                 LobbyUi lobbyUi = FindAnyObjectByType<LobbyUi>();
                 if (lobbyUi != null)
                 {

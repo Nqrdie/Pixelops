@@ -48,8 +48,6 @@ public class PlayerHealth : NetworkBehaviour
         {
             StartCoroutine(HurtFlash());
         }
-
-        Debug.Log($"Health updated to {health} for {gameObject.name}");
     }
 
     private IEnumerator HurtFlash()

@@ -29,10 +29,6 @@ public class WeaponManager : NetworkBehaviour
         ammoValues.Add(weapons[0], (weapons[0].maxAmmo, weapons[0].reserveAmmo));
         ammoValues.Add(weapons[1], (weapons[1].maxAmmo, weapons[1].reserveAmmo));
         ammoValues.Add(weapons[2], (weapons[2].maxAmmo, weapons[2].reserveAmmo));
-
-
-        Debug.Log(weaponHandler);
-        Debug.Log("Team " + weaponHandler.transform.parent.GetComponent<PlayerTeamManager>().GetTeam());
     }
 
     [Rpc(SendTo.Everyone)]

@@ -177,7 +177,7 @@ public class WeaponHandler : MonoBehaviour
         
         RaycastHit hit;
 
-        if (Physics.Raycast(rayOrigin, playerCam.transform.forward, out hit, layerMask))
+        if (Physics.Raycast(rayOrigin, playerCam.transform.forward, out hit, Mathf.Infinity, layerMask))
         {
             GameObject target = hit.collider.transform.gameObject.CompareTag("Player") ? hit.collider.transform.gameObject : null;
             if (target != null)
@@ -188,7 +188,6 @@ public class WeaponHandler : MonoBehaviour
                 {
                     playerStats.AddKillRpc();
                 }
-                Debug.Log("Shot " + target.name + " for " + damage + " Damage");
                 StartCoroutine(Hitmarker());
             }
         }

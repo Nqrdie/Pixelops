@@ -17,7 +17,7 @@ namespace _Scripts
 
         /// <summary>
         /// Made by Jesper Heese
-        /// I only edited this to make it work in my game
+        /// I edited a lot to make it work in my game
         /// </summary>
         /// 
 
@@ -257,7 +257,7 @@ namespace _Scripts
         public void CreateGame() => LobbyManager.Instance.CreateLobby(hostLobbyName.text);
 
 
-        private Dictionary<string, GameObject> playerToGameObjectMap = new(); // Map player.Id (string) to newPlayer
+        private Dictionary<string, GameObject> playerToGameObjectMap = new(); 
 
         public void OnNewPlayer()
         {
@@ -269,11 +269,10 @@ namespace _Scripts
             }
 
             _currentYDownAmount = 0;
-            playerToGameObjectMap.Clear(); // Clear the dictionary to avoid stale references
+            playerToGameObjectMap.Clear();
 
             foreach (Unity.Services.Lobbies.Models.Player player in playerList)
             {
-                Debug.Log($"[Client] Adding player to map: {player.Id}");
                 GameObject newPlayer = Instantiate(newPlayerPrefab, uiPlayerList.transform);
                 newPlayer.GetComponent<RectTransform>().anchoredPosition = new Vector3(
                     0,
@@ -285,7 +284,6 @@ namespace _Scripts
                 _currentYDownAmount -= YDownAmount;
                 _playerList.Add(newPlayer);
 
-                // Map the player.Id (string) to the newPlayer GameObject
                 playerToGameObjectMap[player.Id] = newPlayer;
             }
         }

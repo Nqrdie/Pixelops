@@ -64,7 +64,6 @@ public class Scoreboard : MonoBehaviour
     }
     private void InstantiateScoreBoard()
     {
-        Debug.Log("Instantiating scoreboard...");
         foreach (var player in gameSystem.playerListTeam1)
         {
             var playerScore = Instantiate(playerScorePrefab, scoreboardTeam1.transform);
@@ -77,7 +76,6 @@ public class Scoreboard : MonoBehaviour
             var playerScore = Instantiate(playerScorePrefab, scoreboardTeam2.transform);
             matchPlayerToScore[player] = playerScore;
         }
-        Debug.Log("Scoreboard instantiated");
         UpdateScoreboardRpc();
     }
 }
