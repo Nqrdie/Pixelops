@@ -20,14 +20,12 @@ public class PlayerTeamManager : NetworkBehaviour
         switch (team)
         {
             case 1:
-                transform.GetChild(0).GetComponent<Renderer>().material.color = Color.red;
                 gameObject.layer = LayerMask.NameToLayer("Team1");
                 playerModels[0].SetActive(true);
                 playerModels[1].SetActive(false);
                 break;
 
             case 2:
-                transform.GetChild(0).GetComponent<Renderer>().material.color = Color.blue;
                 gameObject.layer = LayerMask.NameToLayer("Team2");
                 playerModels[1].SetActive(true);
                 playerModels[0].SetActive(false);
@@ -38,11 +36,11 @@ public class PlayerTeamManager : NetworkBehaviour
     {
         if (team == 1)
         {
-            transform.position = new Vector3(Random.Range(14f, -14.1f), 1, -25);
+            transform.position = new Vector3(Random.Range(-19.5f, -30f), 1, Random.Range(36f, 41));
         }
         else if (team == 2)
         {
-            transform.position = new Vector3(Random.Range(14f, -14.1f), 1, 25);
+            transform.position = new Vector3(Random.Range(-18.6f, -13f), 1, Random.Range(-7f, -16.75f));
         }
     }
 

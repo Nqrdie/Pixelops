@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static _Scripts.LobbyUtil;
 
 namespace _Scripts
 {
@@ -67,9 +67,17 @@ namespace _Scripts
         [SerializeField]
         private GameObject newPlayerPrefab;
 
+        [SerializeField] private GameObject uiPlayerList;
+
+        [SerializeField] private GameObject team1PlayerList;
+
+        [SerializeField] private GameObject team2PlayerList;
+
+        [SerializeField] private GameObject lobbyList;
+
         private const int YDownAmount = 100;
         private int _currentYDownAmount;
-        private List<GameObject> _playerList = new List<GameObject>();
+        public List<GameObject> _playerList = new List<GameObject>();
         private List<GameObject> _lobbies = new();
 
         [SerializeField]
@@ -221,7 +229,7 @@ namespace _Scripts
         {
             try
             {
-                GameObject newLobby = Instantiate(newLobbyPrefab, joinMenu.transform);
+                GameObject newLobby = Instantiate(newLobbyPrefab, lobbyList.transform);
                 newLobby.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text =
                     $"{lobby.Name}\n{lobby.Players[0].Data["PlayerName"].Value}"; // should be lobby name
                 newLobby
@@ -248,8 +256,12 @@ namespace _Scripts
 
         public void CreateGame() => LobbyManager.Instance.CreateLobby(hostLobbyName.text);
 
+
+        private Dictionary<string, GameObject> playerToGameObjectMap = new(); // Map player.Id (string) to newPlayer
+
         public void OnNewPlayer()
         {
+            Debug.Log("[Client] OnNewPlayer called.");
             var playerList = LobbyManager.Instance.Lobby.Players;
             foreach (GameObject obj in _playerList)
             {
@@ -257,9 +269,12 @@ namespace _Scripts
             }
 
             _currentYDownAmount = 0;
+            playerToGameObjectMap.Clear(); // Clear the dictionary to avoid stale references
+
             foreach (Unity.Services.Lobbies.Models.Player player in playerList)
             {
-                GameObject newPlayer = Instantiate(newPlayerPrefab, lobbyMenu.transform);
+                Debug.Log($"[Client] Adding player to map: {player.Id}");
+                GameObject newPlayer = Instantiate(newPlayerPrefab, uiPlayerList.transform);
                 newPlayer.GetComponent<RectTransform>().anchoredPosition = new Vector3(
                     0,
                     _currentYDownAmount,
@@ -269,6 +284,28 @@ namespace _Scripts
                     player.Data["PlayerName"].Value;
                 _currentYDownAmount -= YDownAmount;
                 _playerList.Add(newPlayer);
+
+                // Map the player.Id (string) to the newPlayer GameObject
+                playerToGameObjectMap[player.Id] = newPlayer;
+            }
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        public void UpdatePlayerParentRpc(string playerId, int newTeam)
+        {
+            if (playerToGameObjectMap.TryGetValue(playerId, out GameObject playerObject))
+            {
+                Transform newParent = newTeam == 1 ? team1PlayerList.transform : team2PlayerList.transform;
+                playerObject.transform.SetParent(newParent);
+            }
+        }
+
+        public void RemovePlayerFromUI(string playerId)
+        {
+            if (playerToGameObjectMap.TryGetValue(playerId, out GameObject playerObject))
+            {
+                Destroy(playerObject);
+                playerToGameObjectMap.Remove(playerId);
             }
         }
 

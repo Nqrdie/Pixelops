@@ -32,8 +32,13 @@ public class WeaponHandler : MonoBehaviour
     protected InputHandler input;
 
     public PlayerMovement playerMovement;
+    private Stats playerStats;
+    private Scoreboard scoreboard;
 
     private Coroutine reload;
+
+    [SerializeField] private ParticleSystem muzzleFlashParticleSystem;
+    [SerializeField] private AudioSource shootAudioSource;
 
     private void Start()
     {
@@ -55,6 +60,8 @@ public class WeaponHandler : MonoBehaviour
         playerTeamManager = transform.parent.GetComponent<PlayerTeamManager>();
 
         layerMask = playerTeamManager.GetTeam() == 1 ? LayerMask.GetMask("Team2") : LayerMask.GetMask("Team1");
+        playerStats = transform.parent.GetComponent<Stats>();
+        scoreboard = FindFirstObjectByType<Scoreboard>();
     }
     private void Update()
     {
@@ -164,16 +171,23 @@ public class WeaponHandler : MonoBehaviour
         nextFire = Time.time + fireRate;
 
         currentAmmo--;
+        muzzleFlashParticleSystem.Play();
+        shootAudioSource.Play();
         Vector3 rayOrigin = playerCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
-
+        
         RaycastHit hit;
 
         if (Physics.Raycast(rayOrigin, playerCam.transform.forward, out hit, layerMask))
         {
-            GameObject target = hit.collider.transform.gameObject.CompareTag("Player") ? hit.collider.transform.parent.gameObject : null;
+            GameObject target = hit.collider.transform.gameObject.CompareTag("Player") ? hit.collider.transform.gameObject : null;
             if (target != null)
             {
+                
                 target.GetComponent<PlayerHealth>().TakeDamageRpc(damage);
+                if(target.GetComponent<PlayerHealth>().health <= 0)
+                {
+                    playerStats.AddKillRpc();
+                }
                 Debug.Log("Shot " + target.name + " for " + damage + " Damage");
                 StartCoroutine(Hitmarker());
             }

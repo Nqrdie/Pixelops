@@ -11,6 +11,7 @@ public class PlayerHealth : NetworkBehaviour
     private GameSystem gameSystem;
     private TextMeshProUGUI healthText;
     private GameObject hurtFlash;
+    private Stats playerStats;
 
     private void Start()
     {
@@ -23,6 +24,7 @@ public class PlayerHealth : NetworkBehaviour
         healthText = GameObject.FindGameObjectWithTag("HealthText").GetComponent<TextMeshProUGUI>();
         hurtFlash = GameObject.FindGameObjectWithTag("HurtFlash").gameObject;
         hurtFlash.SetActive(false);
+        playerStats = GetComponent<Stats>();
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -36,40 +38,47 @@ public class PlayerHealth : NetworkBehaviour
         UpdateHealthClientRpc(health);
     }
 
-
     [ClientRpc]
     private void UpdateHealthClientRpc(int updatedHealth)
     {
         
         health = updatedHealth;
-        StartCoroutine(HurtFlash());
+
+        if (hurtFlash != null)
+        {
+            StartCoroutine(HurtFlash());
+        }
 
         Debug.Log($"Health updated to {health} for {gameObject.name}");
     }
 
     private IEnumerator HurtFlash()
     {
+        if(hurtFlash == null)
+            yield break;
         hurtFlash.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         hurtFlash.SetActive(false);
     }
     private void Update()
     {
-        Dead();
         healthText.text = "Health: " + health.ToString() + " / " + maxHealth;
-
+        Die();
     }
 
     public void ResetHurtFlash()
     {
+        if(hurtFlash == null)
+            return;
         hurtFlash.SetActive(false);
     }
 
-    private void Dead()
+    public void Die()
     {
-        if (health <= 0)
+        if(health <= 0)
         {
             gameSystem.CheckPlayerDeaths();
+            playerStats.AddDeathRpc();
         }
     }
 }

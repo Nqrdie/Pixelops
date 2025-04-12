@@ -153,7 +153,8 @@ namespace _Scripts
             return playerName;
         }
 
-        public static string GetName(string id)
+        [Rpc(SendTo.Everyone)]
+        public static string GetNameRpc(string id)
         {
             var player = LobbyManager.Instance.Lobby.Players.Find(w => w.Id == id);
             return player.Data["PlayerName"].Value;

@@ -8,6 +8,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float gunWeight;
     [SerializeField] private float MaxAirSpeed;
+    [SerializeField] private GameObject[] playerModels;
 
     public float groundDrag;
 
@@ -32,16 +33,20 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        rb = gameObject.GetComponent<Rigidbody>();
+        rb = gameObject.GetComponentInParent<Rigidbody>();
         inputHandler = FindFirstObjectByType<InputHandler>();
 
         rb.freezeRotation = true;
         readyToJump = true;
 
         Camera.main.GetComponent<PlayerCam>().player = transform;
+
+        playerModels[0].SetActive(false);
+        playerModels[1].SetActive(false);
     }
 
     private void Update()
@@ -70,17 +75,32 @@ public class PlayerMovement : NetworkBehaviour
 
     private void HandleMovement()
     {
-        // Calculate movement speed based on if the player is sprinting
-        float speed = walkSpeed; //* (holdingKnife ? gunWeight : 1f);
-
-        // Movement input from player
+        float speed = walkSpeed;
         Vector3 moveDirection = transform.forward * inputHandler.moveInput.y + transform.right * inputHandler.moveInput.x;
-        if(!grounded)
-            rb.AddForce(moveDirection * speed * airMultiplier, ForceMode.Force);
-        else
-            rb.AddForce(moveDirection * speed, ForceMode.Force);
-    }
 
+        if (grounded)
+        {
+            rb.AddForce(moveDirection * speed, ForceMode.Force);
+        }
+        else
+        {
+            // i hate this airstrafe bs
+            Vector3 velocity = rb.linearVelocity;
+            Vector3 flatVelocity = new Vector3(velocity.x, 0f, velocity.z);
+            Vector3 desiredDirection = moveDirection.normalized;
+
+            if (inputHandler.moveInput.magnitude > 0)
+            {
+                Vector3 airControlForce = desiredDirection * speed * airMultiplier;
+                rb.AddForce(airControlForce, ForceMode.Acceleration);
+            }
+            if (flatVelocity.magnitude > MaxAirSpeed)
+            {
+                flatVelocity = flatVelocity.normalized * MaxAirSpeed;
+                rb.linearVelocity = new Vector3(flatVelocity.x, rb.linearVelocity.y, flatVelocity.z);
+            }
+        }
+    }
     private void Jump()
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -96,7 +116,6 @@ public class PlayerMovement : NetworkBehaviour
     {
         Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        // limit velocity if needed
         if (flatVel.magnitude > walkSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * walkSpeed;

@@ -88,23 +88,38 @@ public class GameSystem : NetworkBehaviour
         roundWonText.gameObject.SetActive(false);
         ResetRoundRpc();
     }
+
     [Rpc(SendTo.Everyone)]
     private void ResetRoundRpc()
     {
         foreach (GameObject player in playerList)
         {
+            player.SetActive(true);
+
             PlayerTeamManager playerTeamManager = player.GetComponent<PlayerTeamManager>();
             PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-            WeaponManager weaponManager = player.transform.Find("Gun").GetComponent<WeaponManager>();
-            Debug.Log(weaponManager);
+            Transform gunTransform = player.transform.Find("Gun");
 
-            weaponManager.ResetWeapons();
+            if (gunTransform == null)
+            {
+                Debug.LogError($"Gun object not found for player: {player.name}");
+                continue;
+            }
+
+            WeaponManager weaponManager = gunTransform.GetComponent<WeaponManager>();
+            if (weaponManager == null)
+            {
+                Debug.LogError($"WeaponManager component not found on Gun object for player: {player.name}");
+                continue;
+            }
+
+            weaponManager.ResetWeaponsRpc();
             playerHealth.ResetHurtFlash();
             playerTeamManager.SetupPlayerLocations();
             playerHealth.health = playerHealth.maxHealth;
             DeadPlayerListTeam1.Remove(player);
             DeadPlayerListTeam2.Remove(player);
-            player.SetActive(true);
         }
     }
+
 }

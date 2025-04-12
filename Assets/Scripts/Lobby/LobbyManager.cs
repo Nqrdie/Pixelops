@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
@@ -11,18 +12,14 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static _Scripts.LobbyNetworking;
 using static _Scripts.LobbyUtil;
+using static _Scripts.LobbyNetworking;
+using System.Linq;
 
 namespace _Scripts
 {
     public class LobbyManager : NetworkBehaviour
     {
-
-        /// <summary>
-        /// Made by Jesper Heese
-        /// I only edited this to make it work in my game
-        /// </summary>
         public static LobbyManager Instance { get; private set; }
         public bool IsSignedIn { get; private set; }
         private bool GameStarted { get; set; }
@@ -31,20 +28,91 @@ namespace _Scripts
         private Allocation _allocation;
         private string _playerId;
         private string _joinCode;
+
+        // Dictionary to map OwnerClientId (ulong) to PlayerId (string)
         public Dictionary<ulong, string> ConvertedIds = new Dictionary<ulong, string>();
 
         [SerializeField]
         private GameObject playerPrefab;
 
         [SerializeField]
-        private List<GameObject> players = new();
+        public List<GameObject> players = new();
 
         [SerializeField]
-        private bool quickTest = false; // if enabled automatically creates a lobby and starts the game
+        private bool quickTest = false;
 
-        private LobbyUi _lobbyUi; // caching
+        public LobbyUi _lobbyUi;
 
         public bool teamSelected = false;
+
+
+        [Rpc(SendTo.Everyone)]
+        public void UpdatePlayerTeamRpc(string playerId, int teamId)
+        {
+            if (_lobbyUi != null)
+            {
+                _lobbyUi.UpdatePlayerParentRpc(playerId, teamId);
+            }
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        public void SyncConvertedIdsRpc(byte[] serializedDictionary)
+        {
+            ConvertedIds = DeserializeDictionary(serializedDictionary);
+            Debug.Log($"[Client] ConvertedIds synchronized. Count: {ConvertedIds.Count}");
+
+            for (int i = 0; i < ConvertedIds.Count; i++)
+            {
+                var kvp = ConvertedIds.ElementAt(i);
+                Debug.LogWarning($"[Client] ConvertedId: {kvp.Key} -> {kvp.Value}");
+            }
+        }
+
+        public void AddConvertedId(ulong ownerClientId, string playerId)
+        {
+            if (IsServer)
+            {
+                ConvertedIds.Add(ownerClientId, playerId);
+                Debug.Log($"[Server] Added ConvertedId: {ownerClientId} -> {playerId}");
+
+                // Synchronize with all clients
+                SyncConvertedIdsRpc(SerializeDictionary(ConvertedIds));
+            }
+        }
+
+        private byte[] SerializeDictionary(Dictionary<ulong, string> dictionary)
+        {
+            using (var writer = new FastBufferWriter(1024, Allocator.Temp))
+            {
+                writer.WriteValueSafe(dictionary.Count);
+                foreach (var kvp in dictionary)
+                {
+                    writer.WriteValueSafe(kvp.Key);
+                    writer.WriteValueSafe(kvp.Value);
+                    Debug.LogWarning($"[Server] Serialized ConvertedId: {kvp.Key} -> {kvp.Value}");
+                }
+                return writer.ToArray();
+            }
+        }
+
+        private Dictionary<ulong, string> DeserializeDictionary(byte[] data)
+        {
+            var dictionary = new Dictionary<ulong, string>();
+            using (var reader = new FastBufferReader(data, Allocator.Temp))
+            {
+                reader.ReadValueSafe(out int count);
+                for (int i = 0; i < count; i++)
+                {
+                    reader.ReadValueSafe(out ulong key);
+                    reader.ReadValueSafe(out string value);
+                    dictionary.Add(key, value);
+                    Debug.LogWarning($"[Client] Deserialized ConvertedId: {key} -> {value}");
+                }
+            }
+            Debug.Log($"[Client] Deserialized dictionary. Count: {dictionary.Count}");
+            return dictionary;
+        }
+
         #region Insance
         private void Awake()
         {
@@ -132,7 +200,7 @@ namespace _Scripts
             try
             {
                 Status("Starting Unity Relay service...");
-                (Allocation, string, RelayServerData) tuple = await StartHostAllocation(4);
+                (Allocation, string, RelayServerData) tuple = await StartHostAllocation(10);
 
                 Status("Starting Unity Networking...");
                 StartNetworking(tuple.Item3, true);
@@ -150,6 +218,7 @@ namespace _Scripts
                 await UpdatePlayerNameInLobby();
 
                 Log($"Successfully Created lobby {Lobby.Name}");
+                StartHeartbeat();
                 After();
                 if (quickTest)
                     StartGameRpc();
@@ -324,21 +393,12 @@ namespace _Scripts
         {
             try
             {
-                if(!teamSelected)
-                {
-                    NetworkManager.SceneManager.LoadScene("TeamSelect", LoadSceneMode.Single);
-                    _lobbyUi.enabled = false;
-                }
-
                 if (GameStarted)
                     return;
 
-                if(teamSelected)
-                {
-                    GameStarted = true;
-                    GameManager.Instance.LoadInPlayers();
-                    NetworkManager.SceneManager.LoadScene("Main", LoadSceneMode.Single);
-                }
+                GameStarted = true;
+                GameManager.Instance.LoadInPlayers();
+                NetworkManager.SceneManager.LoadScene("Main", LoadSceneMode.Single);
             }
             catch (Exception e)
             {
@@ -400,6 +460,26 @@ namespace _Scripts
             NetworkManager.Shutdown();
         }
 
+        public void StartHeartbeat()
+        {
+            StartCoroutine(SendHeartbeatCoroutine());
+        }
+
+        private IEnumerator SendHeartbeatCoroutine()
+        {
+            while (Lobby != null && !GameStarted)
+            {
+                Task heartbeatTask = LobbyService.Instance.SendHeartbeatPingAsync(Lobby.Id);
+                yield return new WaitUntil(() => heartbeatTask.IsCompleted);
+                Debug.Log("Heartbeat sent to lobby.");
+                if (heartbeatTask.IsFaulted)
+                {
+                    Debug.LogError("Failed to send heartbeat: " + heartbeatTask.Exception);
+                }
+                yield return new WaitForSeconds(15f);
+            }
+        }
         #endregion
     }
 }
+

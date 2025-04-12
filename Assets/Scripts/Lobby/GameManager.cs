@@ -19,7 +19,7 @@ namespace _Scripts
         public static GameManager Instance;
         private int _playerAmount;
         private int _playersLoaded;
-        private List<Player.Player> _players = new();
+        private List<Player> _players = new();
 
         private void Awake()
         {
@@ -48,7 +48,7 @@ namespace _Scripts
                 return;
 
             var playerId = LobbyManager.Instance.ConvertedIds[clientid];
-            var playerName = LobbyUtil.GetName(playerId);
+            var playerName = LobbyUtil.GetNameRpc(playerId);
             Debug.Log($"Player {playerName} joined.");
             _playersLoaded++;
             if (_playersLoaded == _playerAmount)
@@ -59,7 +59,7 @@ namespace _Scripts
         {
             foreach (var player in NetworkManager.Singleton.ConnectedClients)
             {
-                _players.Add(player.Value.PlayerObject.GetComponent<Player.Player>());
+                _players.Add(player.Value.PlayerObject.GetComponent<Player>());
             }
             _playerAmount = _players.Count;
         }

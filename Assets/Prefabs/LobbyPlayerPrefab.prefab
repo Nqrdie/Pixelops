@@ -57,7 +57,7 @@ MonoBehaviour:
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
+  AllowOwnerToParent: 1
 --- !u!114 &7000350723335231637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,3 +73,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   inGamePlayerPrefab: {fileID: 4308097198429232293, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
   team: 0
+  OnTeamChanged:
+    m_PersistentCalls:
+      m_Calls: []

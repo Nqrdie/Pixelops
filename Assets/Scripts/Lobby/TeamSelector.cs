@@ -1,34 +1,58 @@
 using Unity.Netcode;
 using UnityEngine;
-using _Scripts.Player;
 using _Scripts;
+using TMPro;
+using Unity.Services.Matchmaker.Models;
 
-
-public class TeamSelector : NetworkBehaviour
+namespace _Scripts
 {
-    Player playerManager;
 
-    public void OnTeam1ButtonClickRpc()
+    public class TeamSelector : NetworkBehaviour
     {
-        playerManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Player>();
-        AssignPlayerToTeamRpc(NetworkManager.Singleton.LocalClientId, 1);
-    }
+        [SerializeField] private TextMeshProUGUI statusText;
 
-    public void OnTeam2ButtonClickRpc()
-    {
-        playerManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Player>();
-        AssignPlayerToTeamRpc(NetworkManager.Singleton.LocalClientId, 2);
-    }
 
-    private void AssignPlayerToTeamRpc(ulong clientId, int teamId)
-    {
-        playerManager.AssignTeamRpc(clientId, teamId);
-        Debug.Log($"Player {clientId} assigned to team {teamId}");
-    }
+        private void Update()
+        {
 
-    public void StartGame()
-    {
-        LobbyManager.Instance.teamSelected = true;
-        LobbyManager.Instance.StartGameRpc();
+        }
+        public void OnTeam1ButtonClickRpc()
+        {
+            AssignPlayerToTeamRpc(NetworkManager.Singleton.LocalClientId, 1);
+       
+        }
+
+        public void OnTeam2ButtonClickRpc()
+        {
+            AssignPlayerToTeamRpc(NetworkManager.Singleton.LocalClientId, 2);
+            
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void AssignPlayerToTeamRpc(ulong clientId, int teamId)
+        {
+            Player player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<Player>();
+            PlayerTeamManager fml = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerTeamManager>();
+            player.SetTeam(teamId);
+
+            string playerId = player._lobbyPlayerId;
+
+            LobbyManager.Instance.UpdatePlayerTeamRpc(playerId, teamId);
+        }
+
+
+
+        public void StartGame()
+        {
+            foreach (var player in LobbyManager.Instance.players)
+            {
+                if (!player.GetComponent<Player>().IsTeamAssigned())
+                {
+                    LobbyUtil.Status("Not all players have selected a team.");
+                    return;
+                }
+            }
+            LobbyManager.Instance.StartGameRpc();
+        }
     }
 }

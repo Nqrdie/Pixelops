@@ -19,6 +19,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private string aimActionName = "Aim";
     [SerializeField] private string reloadActionName = "Reload";
     [SerializeField] private string switchWeaponActionName = "Swap";
+    [SerializeField] private string scoreboardActionName = "Scoreboard";
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -27,6 +28,7 @@ public class InputHandler : MonoBehaviour
     private InputAction aimAction;
     private InputAction reloadAction;
     public InputAction switchWeaponAction;
+    private InputAction scoreboardAction;
 
     public int switchWeaponIndex { get; private set; }
 
@@ -43,6 +45,8 @@ public class InputHandler : MonoBehaviour
     public bool reloadTriggered { get; private set; }
 
     public int switchWeaponValue { get; private set; }
+
+    public bool scoreboardTriggered { get; private set; }
 
 
     public static InputHandler Instance { get; private set; }
@@ -67,6 +71,7 @@ public class InputHandler : MonoBehaviour
         aimAction = playerControls.FindActionMap(actionMapName).FindAction(aimActionName);
         reloadAction = playerControls.FindActionMap(actionMapName).FindAction(reloadActionName);
         switchWeaponAction = playerControls.FindActionMap(actionMapName).FindAction(switchWeaponActionName);
+        scoreboardAction = playerControls.FindActionMap(actionMapName).FindAction(scoreboardActionName);
         RegisterInputActions();
     }
 
@@ -92,6 +97,9 @@ public class InputHandler : MonoBehaviour
 
         switchWeaponAction.performed += OnSwitchWeapon;
         switchWeaponAction.canceled -= OnSwitchWeapon;
+
+        scoreboardAction.performed += context => scoreboardTriggered = true;
+        scoreboardAction.canceled += context => scoreboardTriggered = false;
     }
 
     private void OnEnable()
@@ -103,6 +111,7 @@ public class InputHandler : MonoBehaviour
         aimAction.Enable();
         reloadAction.Enable();
         switchWeaponAction.Enable();
+        scoreboardAction.Enable();
     }
 
     private void OnDisable()
@@ -114,6 +123,7 @@ public class InputHandler : MonoBehaviour
         aimAction.Disable();
         reloadAction.Disable();
         switchWeaponAction.Disable();
+        scoreboardAction.Disable();
     }
 
     private void OnSwitchWeapon(InputAction.CallbackContext context)
