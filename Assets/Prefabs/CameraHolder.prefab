@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3454502233237173582}
   - component: {fileID: 337580745906084216}
   - component: {fileID: 3825451102460725220}
+  - component: {fileID: 8133368053596825286}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -142,9 +143,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  player: {fileID: 0}
-  sensX: 400
-  sensY: 400
+  player: {fileID: 6979472152942684873, guid: 9920e641440f4da49b6d6a04c2a94d14, type: 3}
+  sensX: 800
+  sensY: 800
+  sensSlider: {fileID: 0}
+  sensText: {fileID: 0}
+--- !u!81 &8133368053596825286
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032297136442754668}
+  m_Enabled: 1
 --- !u!1 &7341115315370696579
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1310092843
+  GlobalObjectIdHash: 1538602939
   InScenePlacedSourceGlobalObjectIdHash: 527801456
   DeferredDespawnTick: 0
   Ownership: 1

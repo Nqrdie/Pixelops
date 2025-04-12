@@ -11,7 +11,21 @@ public class GameSystem : NetworkBehaviour
     public List<GameObject> DeadPlayerListTeam1 = new();
     public List<GameObject> DeadPlayerListTeam2 = new();
     private TextMeshProUGUI roundWonText;
-
+    public static GameSystem Instance { get; private set; } = null;
+    [SerializeField] private GameObject settingsMenu;
+    public bool settingsTriggered = false;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         roundWonText = GameObject.FindGameObjectWithTag("RoundEndText").GetComponent<TextMeshProUGUI>();
@@ -19,6 +33,23 @@ public class GameSystem : NetworkBehaviour
         StartCoroutine(LateStart());
     }
 
+    private void Update()
+    {
+        if(InputHandler.Instance.settingsTriggered)
+        {
+            settingsMenu.SetActive(true);
+            settingsTriggered = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            settingsMenu.SetActive(false);
+            settingsTriggered = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
     private IEnumerator LateStart()
     {
         yield return new WaitForSeconds(1f);

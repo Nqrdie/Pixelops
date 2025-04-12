@@ -59,7 +59,7 @@ public class WeaponHandler : MonoBehaviour
         SwapWeapon(0);
         playerTeamManager = transform.parent.GetComponent<PlayerTeamManager>();
 
-        layerMask = playerTeamManager.GetTeam() == 1 ? LayerMask.GetMask("Team2") : LayerMask.GetMask("Team1");
+        layerMask = playerTeamManager.GetTeam() == 1 ? LayerMask.GetMask("Team1") : LayerMask.GetMask("Team2");
         playerStats = transform.parent.GetComponent<Stats>();
         scoreboard = FindFirstObjectByType<Scoreboard>();
     }
@@ -77,7 +77,7 @@ public class WeaponHandler : MonoBehaviour
             }
         }
 
-        if(input.shootTriggered && Time.time > nextFire && currentAmmo > 0 && reload == null)
+        if(input.shootTriggered && Time.time > nextFire && currentAmmo > 0 && reload == null && !GameSystem.Instance.settingsTriggered)
         {
             Shoot();
         }
@@ -177,7 +177,7 @@ public class WeaponHandler : MonoBehaviour
         
         RaycastHit hit;
 
-        if (Physics.Raycast(rayOrigin, playerCam.transform.forward, out hit, Mathf.Infinity, layerMask))
+        if (Physics.Raycast(rayOrigin, playerCam.transform.forward, out hit, Mathf.Infinity, ~layerMask))
         {
             GameObject target = hit.collider.transform.gameObject.CompareTag("Player") ? hit.collider.transform.gameObject : null;
             if (target != null)

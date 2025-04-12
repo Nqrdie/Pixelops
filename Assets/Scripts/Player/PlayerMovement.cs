@@ -70,7 +70,11 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement();
+        if(!GameSystem.Instance.settingsTriggered)
+        {
+            HandleMovement();
+        }
+        
     }
 
     private void HandleMovement()
@@ -103,13 +107,16 @@ public class PlayerMovement : NetworkBehaviour
     }
     private void Jump()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        if (!GameSystem.Instance.settingsTriggered)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-        Invoke(nameof(ResetJump), jumpCooldown);
+            Invoke(nameof(ResetJump), jumpCooldown);
 
-        GetComponent<PlayerTeamManager>().enabled = true;
+            GetComponent<PlayerTeamManager>().enabled = true;
+        }
     }
 
     private void SpeedControl()
