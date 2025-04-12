@@ -8,7 +8,7 @@ public class WeaponManager : NetworkBehaviour
 {
     [SerializeField] private Weapon[] weapons;
     [SerializeField] public int currentWeaponIndex = 0;
-    [SerializeField] private GameObject weaponHolder;
+    [SerializeField] public GameObject weaponHolder;
     [SerializeField] private GameObject muzzleFlash;
     private PlayerMovement playerMovement;
     private Mesh weaponMesh;

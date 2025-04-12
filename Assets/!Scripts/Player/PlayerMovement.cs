@@ -66,15 +66,17 @@ public class PlayerMovement : NetworkBehaviour
             rb.linearDamping = groundDrag;
         else
             rb.linearDamping = 0;
+
+
     }
 
     private void FixedUpdate()
     {
-        if(!GameSystem.Instance.settingsTriggered)
+        if (!GameSystem.Instance.settingsTriggered)
         {
             HandleMovement();
         }
-        
+
     }
 
     private void HandleMovement()

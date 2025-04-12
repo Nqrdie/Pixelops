@@ -77,6 +77,8 @@ public class WeaponHandler : MonoBehaviour
             }
         }
 
+
+
         if(input.shootTriggered && Time.time > nextFire && currentAmmo > 0 && reload == null && !GameSystem.Instance.settingsTriggered)
         {
             Shoot();
@@ -109,6 +111,7 @@ public class WeaponHandler : MonoBehaviour
 
         ammoText.text = currentAmmo + " / " + reserveAmmo;
     }
+
 
     protected IEnumerator Reload()
     {

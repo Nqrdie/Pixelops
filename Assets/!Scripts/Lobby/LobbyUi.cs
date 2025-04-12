@@ -261,7 +261,6 @@ namespace _Scripts
 
         public void OnNewPlayer()
         {
-            Debug.Log("[Client] OnNewPlayer called.");
             var playerList = LobbyManager.Instance.Lobby.Players;
             foreach (GameObject obj in _playerList)
             {

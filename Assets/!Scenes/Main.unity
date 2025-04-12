@@ -21493,6 +21493,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.409786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.60237
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1884723506837028752, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3414319630222070441, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -21533,10 +21561,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3454502233237173582, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 3825451102460725220, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
       propertyPath: sensText
       value: 
       objectReference: {fileID: 1551521971}
+    - target: {fileID: 3825451102460725220, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3825451102460725220, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
       propertyPath: sensSlider
       value: 
@@ -21548,6 +21584,10 @@ PrefabInstance:
     - target: {fileID: 7341115315370696579, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
       propertyPath: m_Name
       value: CameraHolder
+      objectReference: {fileID: 0}
+    - target: {fileID: 7341115315370696579, guid: aa12830af49630a4484a0689a17a5aab, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

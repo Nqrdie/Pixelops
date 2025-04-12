@@ -48,7 +48,6 @@ namespace _Scripts
 
             var playerId = LobbyManager.Instance.ConvertedIds[clientid];
             var playerName = LobbyUtil.GetNameRpc(playerId);
-            Debug.Log($"Player {playerName} joined.");
             _playersLoaded++;
             if (_playersLoaded == _playerAmount)
                 SpawnInPlayerObjectsRpc();

@@ -28,7 +28,7 @@ namespace _Scripts
             newName = newName.Remove(newName.IndexOf('#'));
             // first letter to uppercase
             newName = newName[0].ToString().ToUpper() + newName[1..];
-            Debug.Log(NetworkManager.Singleton.IsConnectedClient);
+            //Debug.Log(NetworkManager.Singleton.IsConnectedClient);
             var newData = new UpdatePlayerOptions
             {
                 Data = new Dictionary<string, PlayerDataObject>
@@ -45,7 +45,7 @@ namespace _Scripts
                 id,
                 newData
             );
-            Log($"Updated player Data in lobby of user: {newName}");
+            //Log($"Updated player Data in lobby of user: {newName}");
         }
 
         public static async Task UpdateUlongIdInLobby()
@@ -78,7 +78,7 @@ namespace _Scripts
             try
             {
                 await AuthenticationService.Instance.UpdatePlayerNameAsync(newName);
-                Log($"Changed name to {newName}");
+                //Log($"Changed name to {newName}");
             }
             catch (Exception e)
             {
