@@ -61,8 +61,6 @@ public class GameSystem : NetworkBehaviour
                 playerList.Remove(player);
                 playerListTeam1.Remove(player);
                 playerListTeam2.Remove(player);
-                DeadPlayerListTeam1.Remove(player);
-                DeadPlayerListTeam2.Remove(player);
             }
         }
     }
