@@ -75,7 +75,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         if(health <= 0)
         {
-            gameSystem.CheckPlayerDeaths();
+            gameSystem.CheckPlayerDeathsRpc();
             playerStats.AddDeathRpc();
         }
     }

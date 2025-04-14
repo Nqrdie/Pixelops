@@ -256,8 +256,31 @@ namespace _Scripts
 
         public void CreateGame() => LobbyManager.Instance.CreateLobby(hostLobbyName.text);
 
+        public void ChangeStatus(string status = "", Color color = default)
+        {
+            if (SceneManager.GetActiveScene().name != "Lobby")
+            {
+                return;
+            }
+            if (color == default)
+                color = Color.white;
+            statusText.text = status;
+            statusText.color = color;
+        }
 
-        private Dictionary<string, GameObject> playerToGameObjectMap = new(); 
+        public void GoToLobby()
+        {
+            ChangeView(lobbyMenu);
+            bool isServer = NetworkManager.Singleton.IsServer;
+            lobbyDelete.gameObject.SetActive(isServer);
+            lobbyDisconnect.gameObject.SetActive(!isServer);
+            startGame.gameObject.SetActive(isServer);
+        }
+
+
+        // Made everything below this point
+        // Edited OnNewPlayer
+        private Dictionary<string, GameObject> matchPlayerToGameObject = new(); 
 
         public void OnNewPlayer()
         {
@@ -268,7 +291,7 @@ namespace _Scripts
             }
 
             _currentYDownAmount = 0;
-            playerToGameObjectMap.Clear();
+            matchPlayerToGameObject.Clear();
 
             foreach (Unity.Services.Lobbies.Models.Player player in playerList)
             {
@@ -283,48 +306,18 @@ namespace _Scripts
                 _currentYDownAmount -= YDownAmount;
                 _playerList.Add(newPlayer);
 
-                playerToGameObjectMap[player.Id] = newPlayer;
+                matchPlayerToGameObject[player.Id] = newPlayer;
             }
         }
 
         [Rpc(SendTo.ClientsAndHost)]
         public void UpdatePlayerParentRpc(string playerId, int newTeam)
         {
-            if (playerToGameObjectMap.TryGetValue(playerId, out GameObject playerObject))
+            if (matchPlayerToGameObject.TryGetValue(playerId, out GameObject playerObject))
             {
                 Transform newParent = newTeam == 1 ? team1PlayerList.transform : team2PlayerList.transform;
                 playerObject.transform.SetParent(newParent);
             }
-        }
-
-        public void RemovePlayerFromUI(string playerId)
-        {
-            if (playerToGameObjectMap.TryGetValue(playerId, out GameObject playerObject))
-            {
-                Destroy(playerObject);
-                playerToGameObjectMap.Remove(playerId);
-            }
-        }
-
-        public void GoToLobby()
-        {
-            ChangeView(lobbyMenu);
-            bool isServer = NetworkManager.Singleton.IsServer;
-            lobbyDelete.gameObject.SetActive(isServer);
-            lobbyDisconnect.gameObject.SetActive(!isServer);
-            startGame.gameObject.SetActive(isServer);
-        }
-
-        public void ChangeStatus(string status = "", Color color = default)
-        {
-            if(SceneManager.GetActiveScene().name != "Lobby")
-            {
-                return;
-            }
-            if (color == default)
-                color = Color.white;
-            statusText.text = status;
-            statusText.color = color;
         }
     }
 }

@@ -17,6 +17,7 @@ public class PlayerTeamManager : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void AssignLayerRpc()
     {
+        // Sets the layers to disable friendly fire
         switch (team)
         {
             case 1:
@@ -37,10 +38,12 @@ public class PlayerTeamManager : NetworkBehaviour
         if (team == 1)
         {
             transform.position = new Vector3(Random.Range(-19.5f, -30f), 1, Random.Range(36f, 41));
+            GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         }
         else if (team == 2)
         {
             transform.position = new Vector3(Random.Range(-18.6f, -13f), 1, Random.Range(-7f, -16.75f));
+            GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         }
     }
 

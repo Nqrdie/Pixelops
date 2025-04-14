@@ -3,6 +3,8 @@ using Unity.Netcode;
 using System.Collections.Generic;
 using System.Collections;
 using TMPro;
+using UnityEngine.SceneManagement;
+using _Scripts;
 public class GameSystem : NetworkBehaviour
 {
     public List<GameObject> playerList = new();
@@ -14,12 +16,13 @@ public class GameSystem : NetworkBehaviour
     public static GameSystem Instance { get; private set; } = null;
     [SerializeField] private GameObject settingsMenu;
     public bool settingsTriggered = false;
+
+    private int teamWon = 0;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this);
         }
         else
         {
@@ -48,6 +51,19 @@ public class GameSystem : NetworkBehaviour
             settingsTriggered = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        foreach (GameObject player in playerList)
+        {
+            // Removes players if they leave the game so the rounds dont break
+            if(player == null)
+            {
+                playerList.Remove(player);
+                playerListTeam1.Remove(player);
+                playerListTeam2.Remove(player);
+                DeadPlayerListTeam1.Remove(player);
+                DeadPlayerListTeam2.Remove(player);
+            }
         }
     }
     private IEnumerator LateStart()
@@ -85,7 +101,8 @@ public class GameSystem : NetworkBehaviour
             }
         }
     }
-    public void CheckPlayerDeaths()
+    [Rpc(SendTo.Everyone)]
+    public void CheckPlayerDeathsRpc()
     {
 
         foreach (GameObject player in playerList)
@@ -106,18 +123,40 @@ public class GameSystem : NetworkBehaviour
 
         if (DeadPlayerListTeam1.Count == playerListTeam1.Count || DeadPlayerListTeam2.Count == playerListTeam2.Count)
         {
+            if (DeadPlayerListTeam1.Count == playerListTeam1.Count)
+            {
+                teamWon = 2;
+            }
+            if(DeadPlayerListTeam2.Count == playerListTeam2.Count)
+            {
+                teamWon = 1;
+            }
             StartCoroutine(ResetTimer());
-            //ResetRoundRpc();
+            
         }
     }
 
+    // RPC doesnt allow return type functions for some reason......
     private IEnumerator ResetTimer()
     {
-        roundWonText.text = DeadPlayerListTeam1.Count == playerListTeam1.Count ? "Team 2 Won the round!" : "Team 1 Won the round!";
-        roundWonText.gameObject.SetActive(true);
+        BroadcastWonMessageRpc(false);
         yield return new WaitForSeconds(3f);
-        roundWonText.gameObject.SetActive(false);
+        BroadcastWonMessageRpc(true);
         ResetRoundRpc();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void BroadcastWonMessageRpc(bool timeElapsed)
+    {
+        if (!timeElapsed)
+        {
+            roundWonText.text = teamWon == 1 ? "Team 1 Won the round!" : "Team 2 Won the round!";
+            roundWonText.gameObject.SetActive(true);
+        }
+        else
+        {
+            roundWonText.gameObject.SetActive(false);
+        }
     }
 
     [Rpc(SendTo.Everyone)]
@@ -153,4 +192,35 @@ public class GameSystem : NetworkBehaviour
         }
     }
 
+
+    public void LeaveButton()
+    {
+        if (IsServer)
+        {
+            LeaveServerRpc();
+        }
+        else
+        {
+            LeaveGame();
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void LeaveServerRpc()
+    {
+        GameObject lobbyMan = GameObject.Find("LobbyManager");
+        SceneManager.MoveGameObjectToScene(lobbyMan, SceneManager.GetSceneByName("Main"));
+        NetworkManager.Singleton.ConnectionApprovalCallback -= LobbyManager.Instance.ApproveConnection;
+        NetworkManager.Singleton.Shutdown();
+        NetworkManager.SceneManager.LoadScene("Title", LoadSceneMode.Single);
+    }
+
+    private void LeaveGame()
+    {
+        GameObject lobbyMan = GameObject.Find("LobbyManager");
+        SceneManager.MoveGameObjectToScene(lobbyMan, SceneManager.GetSceneByName("Main"));
+        NetworkManager.Singleton.ConnectionApprovalCallback -= LobbyManager.Instance.ApproveConnection;
+        NetworkManager.Singleton.Shutdown();
+        SceneManager.LoadScene("Title");
+    }
 }

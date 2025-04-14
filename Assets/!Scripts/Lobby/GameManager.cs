@@ -9,12 +9,7 @@ namespace _Scripts
     public class GameManager : NetworkBehaviour
     {
 
-
-        /// <summary>
-        /// Made by Jesper Heese
-        /// I only edited this to make it work in my game
-        /// </summary>
-        /// 
+        // Made by Jesper Heese
 
         public static GameManager Instance;
         private int _playerAmount;

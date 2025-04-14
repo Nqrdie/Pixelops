@@ -34,6 +34,7 @@ public class Scoreboard : MonoBehaviour
     [Rpc(SendTo.Everyone)]
     public void UpdateScoreboardRpc()
     {
+        // not the most optimal way to do this but it works
         foreach (var player in gameSystem.playerListTeam1)
         {
             if (matchPlayerToScore.TryGetValue(player, out var playerScore))

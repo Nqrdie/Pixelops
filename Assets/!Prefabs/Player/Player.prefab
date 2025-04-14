@@ -236,7 +236,6 @@ GameObject:
   - component: {fileID: 665354541611871325}
   - component: {fileID: 7463727212031747331}
   - component: {fileID: -8531021887258563239}
-  - component: {fileID: 8993294073505092013}
   - component: {fileID: 5006514934392326863}
   - component: {fileID: 6804141013941777537}
   - component: {fileID: 7058028542220532679}
@@ -255,7 +254,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3629556757467204929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.13595054, z: 0, w: -0.9907156}
+  m_LocalRotation: {x: 0, y: 0.22324961, z: 0, w: 0.9747613}
   m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -397,23 +396,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &8993294073505092013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3629556757467204929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 1
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
 --- !u!114 &5006514934392326863
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -82,28 +82,26 @@ public class PlayerMovement : NetworkBehaviour
     private void HandleMovement()
     {
         float speed = walkSpeed;
-        Vector3 moveDirection = transform.forward * inputHandler.moveInput.y + transform.right * inputHandler.moveInput.x;
+        Vector3 moveDir = transform.forward * inputHandler.moveInput.y + transform.right * inputHandler.moveInput.x;
 
         if (grounded)
         {
-            rb.AddForce(moveDirection * speed, ForceMode.Force);
+            rb.AddForce(moveDir * speed, ForceMode.Force);
         }
         else
         {
-            // i hate this airstrafe bs
-            Vector3 velocity = rb.linearVelocity;
-            Vector3 flatVelocity = new Vector3(velocity.x, 0f, velocity.z);
-            Vector3 desiredDirection = moveDirection.normalized;
+            Vector3 airVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            Vector3 airDir = moveDir.normalized;
 
             if (inputHandler.moveInput.magnitude > 0)
             {
-                Vector3 airControlForce = desiredDirection * speed * airMultiplier;
-                rb.AddForce(airControlForce, ForceMode.Acceleration);
+                Vector3 airForce = airDir * speed * airMultiplier;
+                rb.AddForce(airForce, ForceMode.Acceleration);
             }
-            if (flatVelocity.magnitude > MaxAirSpeed)
+            if (airVel.magnitude > MaxAirSpeed)
             {
-                flatVelocity = flatVelocity.normalized * MaxAirSpeed;
-                rb.linearVelocity = new Vector3(flatVelocity.x, rb.linearVelocity.y, flatVelocity.z);
+                airVel = airVel.normalized * MaxAirSpeed;
+                rb.linearVelocity = new Vector3(airVel.x, rb.linearVelocity.y, airVel.z);
             }
         }
     }

@@ -11,7 +11,8 @@ namespace _Scripts
 {
     public class Player : NetworkBehaviour
     {
-
+        // Base made by Jesper Heese
+        // i basically revamped the entire script to fit my game
 
         [SerializeField]
         private NetworkObject inGamePlayerPrefab;
@@ -28,14 +29,14 @@ namespace _Scripts
 
         private LobbyUi lobbyUi;
 
-        public UnityEvent<int> OnTeamChanged = new UnityEvent<int>(); // UnityEvent for team changes
+        public UnityEvent<int> OnTeamChanged = new UnityEvent<int>();
 
         public void SetTeam(int newTeam)
         {
             if (team != newTeam)
             {
                 team = newTeam;
-                OnTeamChanged?.Invoke(team); // Ensure this is being called
+                OnTeamChanged?.Invoke(team); 
             }
         }
 
@@ -51,10 +52,8 @@ namespace _Scripts
             lobbyUi = FindAnyObjectByType<LobbyUi>();
 
             SetTeam(0);
-            // Subscribe to the OnTeamChanged event
             OnTeamChanged.AddListener(newTeam =>
             {
-                // Notify all clients about the parent change
                 lobbyUi.UpdatePlayerParentRpc(_lobbyPlayerId, newTeam);
             });
             if (IsOwner)
@@ -76,11 +75,7 @@ namespace _Scripts
         [Rpc(SendTo.Server)]
         private void ParentThisRpc()
         {
-            // Apply the parenting change locally for the owner
             transform.parent = GameObject.Find("PlayerParent").transform;
-
-
-            // Notify all clients about the parenting change
             LobbyManager.Instance.CheckForPlayersRpc();
             DDolThisRpc();
         }
@@ -163,13 +158,9 @@ namespace _Scripts
         public bool IsTeamAssigned()
         {
             if(team == 0)
-            {
                 return false;
-            }
             else
-            {
                 return true;
-            }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace _Scripts
     {
         /// <summary>
         /// Made by Jesper Heese
-        /// I edited a lot to make it work in my game
+        /// i made the byte array region and edited some functions to fit my game
         /// </summary>
         public static LobbyManager Instance { get; private set; }
         public bool IsSignedIn { get; private set; }
@@ -33,7 +33,6 @@ namespace _Scripts
         private string _playerId;
         private string _joinCode;
 
-        // Dictionary to map OwnerClientId (ulong) to PlayerId (string)
         public Dictionary<ulong, string> ConvertedIds = new Dictionary<ulong, string>();
 
         [SerializeField]
@@ -50,6 +49,7 @@ namespace _Scripts
         public bool teamSelected = false;
 
 
+
         [Rpc(SendTo.Everyone)]
         public void UpdatePlayerTeamRpc(string playerId, int teamId)
         {
@@ -58,6 +58,10 @@ namespace _Scripts
                 _lobbyUi.UpdatePlayerParentRpc(playerId, teamId);
             }
         }
+
+        #region ByteArray
+        // Assisted by Github Copilot
+        // Rpc couldn't send the dictionary directly so it needed to be serialized into a byte array but i had no clue how to do that
 
         [Rpc(SendTo.ClientsAndHost)]
         public void SyncConvertedIdsRpc(byte[] serializedDictionary)
@@ -110,6 +114,10 @@ namespace _Scripts
             return dictionary;
         }
 
+        #endregion
+
+
+
         #region Insance
         private void Awake()
         {
@@ -131,7 +139,6 @@ namespace _Scripts
             {
                 _lobbyUi = GetComponent<LobbyUi>();
                 LobbyUtil.LobbyUi = _lobbyUi; // set the static reference
-                IsSignedIn = false;
                 NetworkManager.Singleton.ConnectionApprovalCallback += ApproveConnection;
                 await UnityServices.InitializeAsync();
                 await SignIn();
@@ -147,6 +154,12 @@ namespace _Scripts
 
         private async Task SignIn()
         {
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                IsSignedIn = true;
+                _playerId = AuthenticationService.Instance.PlayerId;
+                return;
+            }
             try
             {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -422,7 +435,7 @@ namespace _Scripts
         #endregion
         #region Misc
 
-        private void ApproveConnection(
+        public void ApproveConnection(
             NetworkManager.ConnectionApprovalRequest request,
             NetworkManager.ConnectionApprovalResponse response
         )

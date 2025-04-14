@@ -31750,6 +31750,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4217822249961515050, guid: b79d90f2b45eb9c409519169e537452e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 449173126}
+    - target: {fileID: 4217822249961515050, guid: b79d90f2b45eb9c409519169e537452e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LeaveButton
+      objectReference: {fileID: 0}
     - target: {fileID: 4528764982890769106, guid: b79d90f2b45eb9c409519169e537452e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

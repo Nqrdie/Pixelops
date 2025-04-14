@@ -10,8 +10,8 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] public int currentWeaponIndex = 0;
     [SerializeField] public GameObject weaponHolder;
     [SerializeField] private GameObject muzzleFlash;
-    private PlayerMovement playerMovement;
     private Mesh weaponMesh;
+    private PlayerMovement playerMovement;
 
     public Dictionary<Weapon, (int currentAmmo, int reserveAmmo)> ammoValues = new();
 
@@ -36,6 +36,8 @@ public class WeaponManager : NetworkBehaviour
     {
         weaponMesh = weapons[meshIndex].weaponMesh;
         weaponHolder.GetComponent<MeshFilter>().mesh = weaponMesh;
+
+        // Weapons had different sizes so i set the positions manually
         switch (meshIndex)
         {
             case 0:

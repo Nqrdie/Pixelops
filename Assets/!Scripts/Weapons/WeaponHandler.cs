@@ -6,34 +6,31 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class WeaponHandler : MonoBehaviour
-{
-    private WeaponManager weaponManager;
-    [Header("Weapon stats")]
-    protected int maxAmmo;
-    protected int currentAmmo = 0;
-    protected int reserveAmmo = 0;
+{    
+    // Stats
+    private int maxAmmo;
+    private int currentAmmo = 0;
+    private int reserveAmmo = 0;
     private int maxReserveAmmo = 0;
-    protected int damage;
-    protected int recoil;
-    protected int damageFalloff;
-    protected float fireRate;
-    protected float speedModifier;
-    protected float reloadTime;
-    protected Mesh weaponMesh;
-    protected TextMeshProUGUI ammoText;
-    protected float nextFire;
-    protected RawImage hitmarkerImage;
+    private int damage;
+    private float fireRate;
+    private float reloadTime;
+    private Mesh weaponMesh;
+
+
+    private TextMeshProUGUI ammoText;
+    private float nextFire;
+    private RawImage hitmarkerImage;
     private Weapon currentWeapon;
     private LayerMask layerMask;
-    private PlayerTeamManager playerTeamManager;
     private TextMeshProUGUI reloadText;
 
-    protected Camera playerCam;
-    protected InputHandler input;
-
+    private WeaponManager weaponManager;
+    private Camera playerCam;
+    private InputHandler input;
     public PlayerMovement playerMovement;
+    private PlayerTeamManager playerTeamManager;
     private Stats playerStats;
-    private Scoreboard scoreboard;
 
     private Coroutine reload;
 
@@ -61,7 +58,6 @@ public class WeaponHandler : MonoBehaviour
 
         layerMask = playerTeamManager.GetTeam() == 1 ? LayerMask.GetMask("Team1") : LayerMask.GetMask("Team2");
         playerStats = transform.parent.GetComponent<Stats>();
-        scoreboard = FindFirstObjectByType<Scoreboard>();
     }
     private void Update()
     {
@@ -113,7 +109,7 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
-    protected IEnumerator Reload()
+    private IEnumerator Reload()
     {
         int ammoNeeded = maxAmmo - currentAmmo;
         if (reserveAmmo >= reserveAmmo - ammoNeeded)
@@ -148,6 +144,7 @@ public class WeaponHandler : MonoBehaviour
             reload = null;
         }
 
+        // Store the ammo data of the current weapon before swapping
         weaponManager.ammoValues[currentWeapon] = (currentAmmo, reserveAmmo);
         currentWeapon = weaponManager.ReturnWeapon(i);
 
@@ -156,10 +153,7 @@ public class WeaponHandler : MonoBehaviour
 
         maxAmmo = currentWeapon.maxAmmo;
         damage = currentWeapon.damage;
-        recoil = currentWeapon.recoil;
-        damageFalloff = currentWeapon.damageFalloff;
         fireRate = currentWeapon.fireRate;
-        speedModifier = currentWeapon.speedModifier;
         reloadTime = currentWeapon.reloadTime;
         weaponMesh = currentWeapon.weaponMesh;
         maxReserveAmmo = currentWeapon.maxReserveAmmo;
@@ -169,7 +163,7 @@ public class WeaponHandler : MonoBehaviour
         weaponManager.SwapMesh(i);
     }
 
-    protected void Shoot()
+    private void Shoot()
     {
         nextFire = Time.time + fireRate;
 

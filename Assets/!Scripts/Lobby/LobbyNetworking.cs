@@ -16,7 +16,6 @@ namespace _Scripts
 
     /// <summary>
     /// Made by Jesper Heese
-    /// I only edited this to make it work in my game
     /// </summary>
     public static class LobbyNetworking
     {
