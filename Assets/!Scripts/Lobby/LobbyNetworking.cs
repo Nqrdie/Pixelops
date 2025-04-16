@@ -62,7 +62,7 @@ namespace _Scripts
                         }
                     }
                 };
-                return await LobbyService.Instance.CreateLobbyAsync(lobbyName, 4, options);
+                return await LobbyService.Instance.CreateLobbyAsync(lobbyName, 10, options);
             }
             catch (Exception e) // proper error handling
             {

@@ -14,11 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAmmo: 5
   reserveAmmo: 20
-  damage: 100
-  recoil: 0
-  damageFalloff: 0
+  damage: 80
   fireRate: 1
-  speedModifier: 0
   reloadTime: 2.5
   weaponMesh: {fileID: 1277114865537633538, guid: 68b12d9381f80a34ba2426add0973af7, type: 3}
   maxReserveAmmo: 20

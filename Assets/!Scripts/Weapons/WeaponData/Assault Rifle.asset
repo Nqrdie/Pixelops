@@ -15,10 +15,7 @@ MonoBehaviour:
   maxAmmo: 30
   reserveAmmo: 120
   damage: 10
-  recoil: 0
-  damageFalloff: 0
-  fireRate: 0.2
-  speedModifier: 0
+  fireRate: 0.05
   reloadTime: 2
   weaponMesh: {fileID: -5552850187685414787, guid: 68b12d9381f80a34ba2426add0973af7, type: 3}
   maxReserveAmmo: 120

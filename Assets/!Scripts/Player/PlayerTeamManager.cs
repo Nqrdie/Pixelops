@@ -1,6 +1,5 @@
-using NUnit.Framework.Constraints;
+using System.Collections;
 using Unity.Netcode;
-using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 
 public class PlayerTeamManager : NetworkBehaviour
@@ -11,7 +10,7 @@ public class PlayerTeamManager : NetworkBehaviour
     private void Start()
     {
         AssignLayerRpc();
-        SetupPlayerLocations();
+        StartCoroutine(SetupPlayerLocations());
     }
 
     [Rpc(SendTo.Everyone)]
@@ -33,18 +32,25 @@ public class PlayerTeamManager : NetworkBehaviour
                 break;
         }
     }
-    public void SetupPlayerLocations()
+
+    public IEnumerator SetupPlayerLocations()
     {
-        if (team == 1)
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            transform.position = new Vector3(Random.Range(-19.5f, -30f), 1, Random.Range(36f, 41));
-            GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+            rb.isKinematic = true;
         }
-        else if (team == 2)
-        {
-            transform.position = new Vector3(Random.Range(-18.6f, -13f), 1, Random.Range(-7f, -16.75f));
-            GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-        }
+
+        Vector3 spawnPosition = team == 1
+            ? new Vector3(Random.Range(-19.5f, -30f), 1, Random.Range(36f, 41))
+            : new Vector3(Random.Range(-18.6f, -13f), 1, Random.Range(-7f, -16.75f));
+
+        yield return new WaitForFixedUpdate();
+        Debug.Log($"Team {team} Spawn {spawnPosition}");
+        transform.position = spawnPosition;
+
+            rb.isKinematic = false; 
+            rb.linearVelocity = Vector3.zero; 
     }
 
     public int GetTeam()

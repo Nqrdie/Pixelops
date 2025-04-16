@@ -317,6 +317,7 @@ namespace _Scripts
             {
                 Transform newParent = newTeam == 1 ? team1PlayerList.transform : team2PlayerList.transform;
                 playerObject.transform.SetParent(newParent);
+                playerObject.GetComponentInChildren<Image>().color = newTeam == 1 ? Color.red : Color.blue; 
             }
         }
     }

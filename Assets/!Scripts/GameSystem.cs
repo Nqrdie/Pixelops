@@ -56,12 +56,12 @@ public class GameSystem : NetworkBehaviour
         foreach (GameObject player in playerList)
         {
             // Removes players if they leave the game so the rounds dont break
-            if(player == null)
-            {
-                playerList.Remove(player);
-                playerListTeam1.Remove(player);
-                playerListTeam2.Remove(player);
-            }
+            //if(player == null)
+            //{
+            //    playerList.Remove(player);
+            //    playerListTeam1.Remove(player);
+            //    playerListTeam2.Remove(player);
+            //}
         }
     }
     private IEnumerator LateStart()
@@ -110,16 +110,22 @@ public class GameSystem : NetworkBehaviour
             KillPlayerRpc();
             if (playerTeamManager.GetTeam() == 1 && !player.activeInHierarchy)
             {
-                DeadPlayerListTeam1.Add(player);
+                if (!DeadPlayerListTeam1.Contains(player))
+                {
+                    DeadPlayerListTeam1.Add(player);
+                }
             }
             else if (playerTeamManager.GetTeam() == 2 && !player.activeInHierarchy)
             {
-                DeadPlayerListTeam2.Add(player);
+                if (!DeadPlayerListTeam2.Contains(player))
+                {
+                    DeadPlayerListTeam2.Add(player);
+                }
             }
 
         }
 
-        if (DeadPlayerListTeam1.Count == playerListTeam1.Count || DeadPlayerListTeam2.Count == playerListTeam2.Count)
+        if (DeadPlayerListTeam1.Count >= playerListTeam1.Count || DeadPlayerListTeam2.Count >= playerListTeam2.Count)
         {
             if (DeadPlayerListTeam1.Count == playerListTeam1.Count)
             {
@@ -183,7 +189,7 @@ public class GameSystem : NetworkBehaviour
 
             weaponManager.ResetWeaponsRpc();
             playerHealth.ResetHurtFlash();
-            playerTeamManager.SetupPlayerLocations();
+            StartCoroutine(playerTeamManager.SetupPlayerLocations());
             playerHealth.health = playerHealth.maxHealth;
             DeadPlayerListTeam1.Remove(player);
             DeadPlayerListTeam2.Remove(player);
